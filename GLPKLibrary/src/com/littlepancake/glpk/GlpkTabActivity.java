@@ -25,7 +25,7 @@ import android.support.v4.app.FragmentTabHost;
 
 public class GlpkTabActivity extends FragmentActivity {
 	public static final String TAB_LABEL_MODL = "Model Language";
-	public static final String TAB_LABEL_PROG = "Programmatic";
+	public static final String TAB_LABEL_PROG = "API Example";
 	public static final String TAB_LABEL_HELP = "Help";
 	public static final String LIB_NAME_GLPK  = "glpk";
 	

@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Part of the GLPK on Android project.
+# Copyright 2014, Joseph Rios, Littlepancake Software, info@littlepancake.com
+
 # Run from <project>/scripts directory
 # Capture output to file called Android.mk
 

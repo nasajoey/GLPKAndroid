@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">GLPK on Android</string>
+    <string name="action_settings">Settings</string>
+    <string name="solve">Solve</string>
+    <string name="clear">Clear</string>
+    <string name="solnLocation">Solution will be here.</string>
+    <string name="codeLocation">Code will be here.</string>
+    <string name="readGpl">Read GPL v3</string>
+    <string name="readManual">Read Manual</string>
+    <string name="ackText">This project obviously wouldn\'t be possible without all the great work put in by Andrew Makhorin on the GLPK project. This library also makes use of the great open source project, SWIG.</string>
+    <string name="gplText">Please note that GLPK is released under the GPLv3. I\'m not a lawyer, but from my understanding, that means any Android project you release that uses the GLPK library will have to be released as open source. It is because of this license that I will not likely spend much time developing any more apps using this library. Please read the GPLv3 for more information.</string>
+    <string name="readManualText">Press the \'Read Manual\' buton To read the GLPK User Manual here on your device. Of particular interest might be the general capabilities of GLPK and the Appendix describing the CPLEX LP format for use within the \'Model Language\' tab.</string>
+    <string name="appDesign">This app was designed solely to demonstrate how a programmer may use GLPK on Android. It may be useful for solving small models on the \'Model Language\' tab. This app was not designed to look particularly nice or be especially user friendly.</string>
+    <string name="enter_lp">In the text area below, you can enter a linear programming problem in LP format to solve with GLPK. To learn more about LP format, check the help tab.</string>
+    <string name="app_description">This is an example of how a problem can be solved programmatically.  This means the problem is created coompletely within code using the GLPK function calls (via Java methods). As an app, this is not very exciting, To really get anything out of this, you should look at the source code.  The important parts of that code are provided below for illustration. Click \'Solve\' button to run the code.</string>
+</resources>

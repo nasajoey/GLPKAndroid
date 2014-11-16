@@ -1,0 +1,142 @@
+<div style='background:#FFFFFF; font-family: Courier New, Courier; font-size: 10pt; COLOR: #000000; padding-bottom: 0px; padding-left: 0px; padding-right: 0px; padding-top: 0px;'><strong><font color='#7f0055'>package</font></strong>&nbsp;com.littlepancake.glpk;
+<br/>
+<br/><strong><font color='#7f0055'>import</font></strong>&nbsp;java.text.DecimalFormat;
+<br/>
+<br/><strong><font color='#7f0055'>import</font></strong>&nbsp;com.littlepancake.glpk.jni.GLPK;
+<br/><strong><font color='#7f0055'>import</font></strong>&nbsp;com.littlepancake.glpk.jni.GlpkConstants;
+<br/><strong><font color='#7f0055'>import</font></strong>&nbsp;com.littlepancake.glpk.jni.SWIGTYPE_p_double;
+<br/><strong><font color='#7f0055'>import</font></strong>&nbsp;com.littlepancake.glpk.jni.SWIGTYPE_p_glp_prob;
+<br/><strong><font color='#7f0055'>import</font></strong>&nbsp;com.littlepancake.glpk.jni.SWIGTYPE_p_int;
+<br/>
+<br/><strong><font color='#7f0055'>public</font></strong>&nbsp;<strong><font color='#7f0055'>class</font></strong>&nbsp;GlpkJniSample&nbsp;{
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;<font color='#3f7f5f'>/*&nbsp;This&nbsp;example&nbsp;problem&nbsp;is&nbsp;exactly&nbsp;the&nbsp;same&nbsp;as&nbsp;the&nbsp;one&nbsp;presented
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;in&nbsp;the&nbsp;GLPK&nbsp;manual.&nbsp;&nbsp;
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</font>
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;<strong><font color='#7f0055'>public</font></strong>&nbsp;<strong><font color='#7f0055'>static</font></strong>&nbsp;<strong><font color='#7f0055'>void</font></strong>&nbsp;sample()&nbsp;{
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DecimalFormat&nbsp;df&nbsp;=&nbsp;<strong><font color='#7f0055'>new</font></strong>&nbsp;DecimalFormat(<font color='#2a00ff'>"0.00"</font>);
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color='#3f7f5f'>/*
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Maximize&nbsp;z&nbsp;=&nbsp;10x1&nbsp;+&nbsp;6x2&nbsp;+&nbsp;4x3
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;subject&nbsp;to:
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;p=&nbsp;&nbsp;&nbsp;x1&nbsp;+&nbsp;x2&nbsp;+&nbsp;x3&nbsp;
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;q=&nbsp;10x1&nbsp;+4x2&nbsp;+5x3&nbsp;
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;r=&nbsp;&nbsp;2x1&nbsp;+2x2&nbsp;+6x3
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;and&nbsp;bounds&nbsp;of&nbsp;variables
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;−∞<p≤100&nbsp;−∞<q≤600&nbsp;−∞<r≤300
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0≤x1&nbsp;<+∞&nbsp;0≤x2&nbsp;<+∞&nbsp;0≤x3&nbsp;<+∞
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</font>
+<br/>
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong><font color='#7f0055'>final</font></strong>&nbsp;<strong><font color='#7f0055'>int</font></strong>&nbsp;ARRAY_SIZE&nbsp;=&nbsp;10;
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong><font color='#7f0055'>double</font></strong>&nbsp;z,&nbsp;x1,&nbsp;x2,&nbsp;x3;&nbsp;<font color='#3f7f5f'>/*&nbsp;Results&nbsp;will&nbsp;be&nbsp;saved&nbsp;in&nbsp;these&nbsp;variables.&nbsp;*/</font>
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color='#3f7f5f'>/*&nbsp;Create&nbsp;our&nbsp;arrays.&nbsp;*/</font>
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SWIGTYPE_p_int&nbsp;ia&nbsp;=&nbsp;
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GLPK.new_int_array(ARRAY_SIZE);
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SWIGTYPE_p_int&nbsp;ja&nbsp;=&nbsp;
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GLPK.new_int_array(ARRAY_SIZE);
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SWIGTYPE_p_double&nbsp;ar&nbsp;=&nbsp;
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GLPK.new_double_array(ARRAY_SIZE);
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color='#3f7f5f'>/*&nbsp;Create&nbsp;the&nbsp;LP&nbsp;instance.&nbsp;*/</font>
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SWIGTYPE_p_glp_prob&nbsp;lp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lp&nbsp;=&nbsp;GLPK.glp_create_prob();
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GLPK.glp_set_prob_name(lp,&nbsp;<font color='#2a00ff'>"sample"</font>);
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GLPK.glp_set_obj_dir(lp,&nbsp;GLP_MAX);
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color='#3f7f5f'>/*&nbsp;Add&nbsp;some&nbsp;rows.&nbsp;*/</font>
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GLPK.glp_add_rows(lp,&nbsp;3);
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GLPK.glp_set_row_name(lp,&nbsp;1,&nbsp;<font color='#2a00ff'>"p"</font>);
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GLPK.glp_set_row_bnds(lp,&nbsp;1,&nbsp;GLP_UP,&nbsp;0.0,&nbsp;100.0);
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GLPK.glp_set_row_name(lp,&nbsp;2,&nbsp;<font color='#2a00ff'>"q"</font>);
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GLPK.glp_set_row_bnds(lp,&nbsp;2,&nbsp;GLP_UP,&nbsp;0.0,&nbsp;600.0);
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GLPK.glp_set_row_name(lp,&nbsp;3,&nbsp;<font color='#2a00ff'>"r"</font>);
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GLPK.glp_set_row_bnds(lp,&nbsp;3,&nbsp;GLP_UP,&nbsp;0.0,&nbsp;300.0);
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color='#3f7f5f'>/*&nbsp;Add&nbsp;some&nbsp;columns.&nbsp;*/</font>
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GLPK.glp_add_cols(lp,&nbsp;3);
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GLPK.glp_set_col_name(lp,&nbsp;1,&nbsp;<font color='#2a00ff'>"x1"</font>);
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GLPK.glp_set_col_bnds(lp,&nbsp;1,&nbsp;GLP_LO,&nbsp;0.0,&nbsp;0.0);
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GLPK.glp_set_obj_coef(lp,&nbsp;1,&nbsp;10.0);
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GLPK.glp_set_col_name(lp,&nbsp;2,&nbsp;<font color='#2a00ff'>"x2"</font>);
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GLPK.glp_set_col_bnds(lp,&nbsp;2,&nbsp;GLP_LO,&nbsp;0.0,&nbsp;0.0);
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GLPK.glp_set_obj_coef(lp,&nbsp;2,&nbsp;6.0);
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GLPK.glp_set_col_name(lp,&nbsp;3,&nbsp;<font color='#2a00ff'>"x3"</font>);
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GLPK.glp_set_col_bnds(lp,&nbsp;3,&nbsp;GLP_LO,&nbsp;0.0,&nbsp;0.0);
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GLPK.glp_set_obj_coef(lp,&nbsp;3,&nbsp;4.0);
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color='#3f7f5f'>/*&nbsp;Set&nbsp;the&nbsp;constraint&nbsp;matrix&nbsp;(A)&nbsp;values.&nbsp;*/</font>
+<br/>
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color='#3f7f5f'>/*&nbsp;&nbsp;&nbsp;&nbsp;A[1,1]&nbsp;=&nbsp;1.0&nbsp;*/</font>
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GLPK.int_array_setitem(ia,&nbsp;1,&nbsp;1);&nbsp;
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GLPK.int_array_setitem(ja,&nbsp;1,&nbsp;1);&nbsp;
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GLPK.double_array_setitem(ar,&nbsp;1,&nbsp;1.0);
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color='#3f7f5f'>/*&nbsp;&nbsp;&nbsp;&nbsp;A[1,2]&nbsp;=&nbsp;1.0&nbsp;*/</font>
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GLPK.int_array_setitem(ia,&nbsp;2,&nbsp;1);&nbsp;
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GLPK.int_array_setitem(ja,&nbsp;2,&nbsp;2);&nbsp;
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GLPK.double_array_setitem(ar,&nbsp;2,&nbsp;1.0);
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color='#3f7f5f'>/*&nbsp;&nbsp;&nbsp;&nbsp;A[1,3]&nbsp;=&nbsp;1.0&nbsp;*/</font>
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GLPK.int_array_setitem(ia,&nbsp;3,&nbsp;1);&nbsp;
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GLPK.int_array_setitem(ja,&nbsp;3,&nbsp;3);&nbsp;
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GLPK.double_array_setitem(ar,&nbsp;3,&nbsp;1.0);
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color='#3f7f5f'>/*&nbsp;&nbsp;&nbsp;&nbsp;A[2,1]&nbsp;=&nbsp;10.0&nbsp;*/</font>
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GLPK.int_array_setitem(ia,&nbsp;4,&nbsp;2);&nbsp;
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GLPK.int_array_setitem(ja,&nbsp;4,&nbsp;1);&nbsp;
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GLPK.double_array_setitem(ar,&nbsp;4,&nbsp;10.0);
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color='#3f7f5f'>/*&nbsp;&nbsp;&nbsp;&nbsp;A[2,2]&nbsp;=&nbsp;4.0&nbsp;*/</font>
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GLPK.int_array_setitem(ia,&nbsp;6,&nbsp;2);&nbsp;
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GLPK.int_array_setitem(ja,&nbsp;6,&nbsp;2);&nbsp;
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GLPK.double_array_setitem(ar,&nbsp;6,&nbsp;4.0);
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color='#3f7f5f'>/*&nbsp;&nbsp;&nbsp;&nbsp;A[2,3]&nbsp;=&nbsp;5.0&nbsp;*/</font>
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GLPK.int_array_setitem(ia,&nbsp;8,&nbsp;2);&nbsp;
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GLPK.int_array_setitem(ja,&nbsp;8,&nbsp;3);&nbsp;
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GLPK.double_array_setitem(ar,&nbsp;8,&nbsp;5.0);
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color='#3f7f5f'>/*&nbsp;&nbsp;&nbsp;&nbsp;A[3,1]&nbsp;=&nbsp;2.0&nbsp;*/</font>
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GLPK.int_array_setitem(ia,&nbsp;5,&nbsp;3);&nbsp;
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GLPK.int_array_setitem(ja,&nbsp;5,&nbsp;1);&nbsp;
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GLPK.double_array_setitem(ar,&nbsp;5,&nbsp;2.0);
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color='#3f7f5f'>/*&nbsp;&nbsp;&nbsp;&nbsp;A[3,2]&nbsp;=&nbsp;2.0&nbsp;*/</font>
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GLPK.int_array_setitem(ia,&nbsp;7,&nbsp;3);&nbsp;
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GLPK.int_array_setitem(ja,&nbsp;7,&nbsp;2);&nbsp;
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GLPK.double_array_setitem(ar,&nbsp;7,&nbsp;2.0);
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color='#3f7f5f'>/*&nbsp;&nbsp;&nbsp;&nbsp;A[3,3]&nbsp;=&nbsp;6.0&nbsp;*/</font>
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GLPK.int_array_setitem(ia,&nbsp;9,&nbsp;3);&nbsp;
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GLPK.int_array_setitem(ja,&nbsp;9,&nbsp;3);&nbsp;
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GLPK.double_array_setitem(ar,&nbsp;9,&nbsp;6.0);
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GLPK.glp_load_matrix(lp,&nbsp;9,&nbsp;ia,&nbsp;ja,&nbsp;ar);
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color='#3f7f5f'>/*&nbsp;Solve&nbsp;the&nbsp;LP&nbsp;and&nbsp;retrieve&nbsp;values.&nbsp;*/</font>
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GLPK.glp_simplex(lp,&nbsp;<strong><font color='#7f0055'>null</font></strong>);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;z&nbsp;&nbsp;=&nbsp;GLPK.glp_get_obj_val(lp);
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x1&nbsp;=&nbsp;GLPK.glp_get_col_prim(lp,&nbsp;1);
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x2&nbsp;=&nbsp;GLPK.glp_get_col_prim(lp,&nbsp;2);
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x3&nbsp;=&nbsp;GLPK.glp_get_col_prim(lp,&nbsp;3);
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color='#3f7f5f'>/*&nbsp;Save&nbsp;result&nbsp;string&nbsp;for&nbsp;other&nbsp;classes&nbsp;to&nbsp;access.&nbsp;*/</font>
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;solutionString&nbsp;=&nbsp;
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color='#2a00ff'>"z&nbsp;=&nbsp;"</font>+df.format(z)+
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color='#2a00ff'>";&nbsp;x1&nbsp;=&nbsp;"</font>+df.format(x1)+
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color='#2a00ff'>";&nbsp;x2&nbsp;=&nbsp;"</font>+df.format(x2)+
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color='#2a00ff'>";&nbsp;x3&nbsp;=&nbsp;"</font>+df.format(x3);
+<br/>
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color='#3f7f5f'>/*&nbsp;Tidy&nbsp;up.&nbsp;*/</font>
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GLPK.glp_delete_prob(lp);
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;}
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;<font color='#3f7f5f'>/*&nbsp;Shorten&nbsp;the&nbsp;names&nbsp;of&nbsp;some&nbsp;constants.&nbsp;*/</font>
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;<strong><font color='#7f0055'>static</font></strong>&nbsp;<strong><font color='#7f0055'>int</font></strong>&nbsp;GLP_MAX&nbsp;=&nbsp;GlpkConstants.GLP_MAX;
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;<strong><font color='#7f0055'>static</font></strong>&nbsp;<strong><font color='#7f0055'>int</font></strong>&nbsp;GLP_LO&nbsp;=&nbsp;GlpkConstants.GLP_LO;
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;<strong><font color='#7f0055'>static</font></strong>&nbsp;<strong><font color='#7f0055'>int</font></strong>&nbsp;GLP_UP&nbsp;=&nbsp;GlpkConstants.GLP_UP;
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;<strong><font color='#7f0055'>public</font></strong>&nbsp;<strong><font color='#7f0055'>static</font></strong>&nbsp;String&nbsp;solutionString&nbsp;=&nbsp;<font color='#2a00ff'>"NOT&nbsp;YET&nbsp;SET"</font>;
+<br/>}
+<br/></div>

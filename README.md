@@ -6,7 +6,7 @@ A port of the GNU Linear Programming Kit (GLPK) for use on Android systems.
 Audience
 ========
 
-This project is a complete Android app that includes GLPK as an NDK library.  The app itself isn't the most exciting thing in the world, but it should demonstrate the capabilities of the GLPK library.  The app does allow for the entry of arbitrary linear programs using the GNU Mathprog language, so some simple LP's should be solvable using the app.
+This project is a complete Android app that includes GLPK as an NDK library.  The app itself isn't the most exciting thing in the world, but it should demonstrate the capabilities of the GLPK library.  The app does allow for the entry of arbitrary linear programs using the CPLEX LP format, so some simple LP's should be solvable using the app.
 
 Given all of this, the audience is likely those that might be interested in using linear programming capability within their own app and want the power of a full-featured LP library like GLPK.
 
